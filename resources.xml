@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <node name="mtcinx-prdint01.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-prdint01.corp.web" osArch="amd64" osFamily="unix" osName="Linux" osVersion="2.6.32-279.el6.x86_64" username="jenkins"/>
+
+de name="mtcinx-devapp01.mt.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-devapp01.mt.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-devapp02.mt.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-devapp02.mt.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-devapp03.mt.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-devapp03.mt.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-devels01.mt.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-devels01.mt.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-devels02.mt.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-devels02.mt.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-devels03.mt.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-devels03.mt.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-devels04.mt.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-devels04.mt.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-devels05.mt.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-devels05.mt.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-devels06.mt.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-devels06.mt.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-apdels01.mt.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-apdels01.mt.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-apdels02.mt.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-apdels02.mt.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-apdels03.mt.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-apdels03.mt.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qadser01.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qadser01.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qadser02.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qadser02.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qadser03.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qadser03.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qadser04.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qadser04.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qadser05.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qadser05.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qaeels01.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qaeels01.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qaeels02.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qaeels02.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qaeels03.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qaeels03.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qafels01.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qafels01.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qafels02.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qaeels02.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qafels03.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qaeels03.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qafels04.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qaeels04.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qaeels05.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qaeels05.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qaeels06.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qaeels06.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qaeels07.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qaeels07.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qaeels08.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qaeels08.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qaeels09.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qaeels09.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qaeels10.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qaeels10.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qapels01.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qapels01.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qapels02.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qapels02.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qapels03.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qapels03.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qapels04.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qapels04.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qapels05.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qapels05.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qapels06.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qapels06.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qapels07.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qapels07.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qapels08.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qapels08.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qapels09.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qapels09.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-qapels10.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-qapels10.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-stgser01.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-stgser01.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-stgser02.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-stgser02.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-stgser03.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-stgser03.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-stgser04.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-stgser04.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+<node name="mtcinx-stgser05.corp.web" description="Rundeck server node" tags="" hostname="mtcinx-stgser05.corp.web" osArch="x86_64" osFamily="Linux" osName="Red Hat" osVersion="4.4.7-3" username="pipeline"/>
+
+
+
+</project>

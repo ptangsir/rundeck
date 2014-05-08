@@ -1,0 +1,1297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<joblist> 
+  <job> 
+    <id>a5967c08-93c5-461c-a6f4-ce260644edd4</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <exec>sh</exec> 
+      </command> 
+    </sequence>  
+    <description>AppDev-Deploy-ArtifactGraph</description>  
+    <name>AppDev-Deploy-ArtifactGraph</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="Mindtap" valuesUrl="http://mtcinx-graphmgo02.mt.corp.web:3000/artifacts/mindtap" enforcedvalues="true"/>  
+        <option name="MtAnalytics" valuesUrl="http://mtcinx-graphmgo02.mt.corp.web:3000/artifacts/mt-analytics" enforcedvalues="true"/>  
+        <option name="Mtx" valuesUrl="http://mtcinx-graphmgo02.mt.corp.web:3000/artifacts/mtx" enforcedvalues="true"/>  
+        <option name="analytics_hosts" values="mtcinx-apdanl01.mt.corp.web mtcinx-apdanl02.mt.corp.web" enforcedvalues="true"/>  
+        <option name="core_app_hosts" values="mtcinx-apdapp01.mt.corp.web mtcinx-apdapp02.mt.corp.web" enforcedvalues="true"/>  
+        <option name="db_host" values="mtcinx-apdmys01.mt.corp.web" enforcedvalues="true"/>  
+        <option name="dbmaintain_host" values="mtcinx-apdapp01.mt.corp.web" enforcedvalues="true"/>  
+        <option name="progress_app_hosts" values="mtcinx-apdmindapp01.mt.corp.web mtcinx-apdmindapp02.mt.corp.web" enforcedvalues="true"/> 
+      </options> 
+    </context>  
+    <uuid>a5967c08-93c5-461c-a6f4-ce260644edd4</uuid>  
+    <group>Non-Prod Deployment jobs</group> 
+  </job>  
+  <job> 
+    <id>ba7561ce-98c4-4543-a245-72b6c914a2fd</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <scriptargs/>  
+        <script><![CDATA[if [ "$RD_OPTION_ANALYTICS" != "-- NONE --" ] 
+then
+    if [[ !("$analytics" =~ ^https?://.+$) ]]
+    then
+        analytics="http://nexus.mindtap.corp.web/service/local/repositories/pipeline-production-snapshot/content/$RD_OPTION_ANALYTICS"
+    fi
+
+    wget -nv -O analytics.war $RD_OPTION_ANALYTICS
+
+    for host in $hosts; do
+        wget -nv -O/dev/null http://10.160.178.50/downtime_host_services.php?host=${host}
+        ssh pipeline@${host} "/etc/init.d/ngtomcat01 stop
+
+        rm -rf /pipe/data/ng/ngtomcat01/webapps/analytics
+        rm -rf /pipe/data/ng/ngtomcat01/webapps/analytics.war
+        rm -rf /pipe/data/ng/ngtomcat01/work/Catalina/localhost/analytics"
+
+        scp analytics.war pipeline@${host}:/pipe/data/ng/ngtomcat01/webapps/analytics.war
+
+        ssh pipeline@${host} "/etc/init.d/ngtomcat01 start"
+    done
+
+fi]]></script> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - Analytics Wars</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="analytics"/>  
+        <option name="hosts"/> 
+      </options> 
+    </context>  
+    <uuid>ba7561ce-98c4-4543-a245-72b6c914a2fd</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>ff75ed08-aa6e-41b3-82bb-fd1814caa049</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <scriptargs/>  
+        <script><![CDATA[if [ -n "$RD_OPTION_ANALYTICS" ] && [ "$RD_OPTION_ANALYTICS" != "-- NONE --" ] && [[ "$RD_OPTION_ANALYTICS" != \$RD_OPTION_ANALYTICS* ]]
+then
+    if [[ !("$RD_OPTION_ANALYTICS" =~ ^https?://.+$) ]]
+    then
+        analytics="http://nexus.mindtap.corp.web/service/local/repositories/pipeline-production-snapshot/content/$RD_OPTION_ANALYTICS"
+    fi
+
+    wget -nv -O analytics.war $RD_OPTION_ANALYTICS
+
+    for host in $RD_OPTION_HOSTS; do
+        wget -nv -O/dev/null http://10.160.178.50/downtime_host_services.php?host=$RD_OPTION_HOSTS
+        ssh pipeline@$RD_OPTION_HOSTS "/etc/init.d/ngtomcat01 stop
+
+        rm -rf /pipe/data/ng/ngtomcat01/webapps/analytics
+        rm -rf /pipe/data/ng/ngtomcat01/webapps/analytics.war
+        rm -rf /pipe/data/ng/ngtomcat01/work/Catalina/localhost/analytics"
+
+        scp analytics.war pipeline@$RD_OPTION_HOSTS:/pipe/data/ng/ngtomcat01/webapps/analytics.war
+
+        ssh pipeline@$RD_OPTION_HOSTS "/etc/init.d/ngtomcat01 start"
+    done
+
+fi]]></script> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - Analytics Wars with Restart Tomcat</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="analytics"/>  
+        <option name="hosts"/> 
+      </options> 
+    </context>  
+    <uuid>ff75ed08-aa6e-41b3-82bb-fd1814caa049</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>e07a1c84-78e6-483e-b90c-f84a570fcad0</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <jobref name="Deploy Template - DBMaintain" group="Prod Deployment Jobs/Templates"> 
+          <arg line="-host ${option.dbmaintain_host} -dbhost=${option.db_host}"/> 
+        </jobref> 
+      </command>  
+      <command> 
+        <jobref name="Deploy Template - Analytics Wars with Restart Tomcat" group="Prod Deployment Jobs/Templates"> 
+          <arg line="-hosts ${option.analytics_hosts}"/> 
+        </jobref> 
+      </command>  
+      <command> 
+        <jobref name="Deploy Template - ProgressApp Wars" group="Prod Deployment Jobs/Templates"> 
+          <arg line="-hosts ${option.progressapp_hosts}"/> 
+        </jobref> 
+      </command>  
+      <command> 
+        <jobref name="Deploy Template - Core-App Wars with Restart Tomcat" group="Prod Deployment Jobs/Templates"> 
+          <arg line="-hosts ${option.core_app_hosts}"/> 
+        </jobref> 
+      </command>  
+      <command> 
+        <jobref name="Deploy Template - UI" group="Prod Deployment Jobs/Templates"> 
+          <arg line="-hosts ${option.core_app_hosts}"/> 
+        </jobref> 
+      </command>  
+      <command> 
+        <jobref name="Deploy Template - MindApps - with chemref" group="Prod Deployment Jobs/Templates" nodeStep="true"> 
+          <arg line="-hosts ${option.core_app_hosts}"/> 
+        </jobref> 
+      </command>  
+      <command> 
+        <jobref name="Deploy Template - MindTap Verify Status of Wars and UI" group="Prod Deployment Jobs/Templates" nodeStep="true"/> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - Basic Deploy - with chemref-client</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="analytics" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/analytics"/>  
+        <option name="analytics_hosts"/>  
+        <option name="chemrefClient" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/chemref-client"/>  
+        <option name="core_app_hosts"/>  
+        <option name="db_hosts"> 
+          <description>Host to run dbmaintain against</description> 
+        </option>  
+        <option name="dbmaintain" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/nb-db"/>  
+        <option name="dbmaintainAnalytics" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/mt-analytics-db"/>  
+        <option name="dbmaintainEnhancedInsite" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/enhancedinsite-db"/>  
+        <option name="dbmaintainWeblink" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/weblink-db"/>  
+        <option name="dbmaintain_host"/>  
+        <option name="enhancedInsiteClient" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/enhancedinsite-client"/>  
+        <option name="enhancedInsiteService" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/enhancedinsite"/>  
+        <option name="henleyClient" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/henley-ui"/>  
+        <option name="henleyService" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/henley"/>  
+        <option name="iloveapps" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/iloveapps"/>  
+        <option name="messagecenterService" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/messagecenter"/>  
+        <option name="mindappCxp" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/mindapp-cxp"/>  
+        <option name="mindappResourceViewer" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/mindapp-resource-viewer"/>  
+        <option name="nbapps" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/nbapps"/>  
+        <option name="nbcore" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/nb"/>  
+        <option name="nbreader" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/nbreader"/>  
+        <option name="ngsamplewebapp" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/nbapps"/>  
+        <option name="progressAppClient" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/progress-client"/>  
+        <option name="progressAppService" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/progressapp"/>  
+        <option name="progressapp_hosts"/>  
+        <option name="ui" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/ui"/>  
+        <option name="weblinkClient" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/weblink-client"/>  
+        <option name="weblinkService" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/weblink"/> 
+      </options> 
+    </context>  
+    <uuid>e07a1c84-78e6-483e-b90c-f84a570fcad0</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>9d697222-f885-4c05-b946-bb2cf542356e</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <scriptargs/>  
+        <script><![CDATA[declare -A appMap
+appMap[nb]=$RD_OPTION_NBCORE
+appMap[nbreader]=$RD_OPTION_NBREADER
+appMap[nbapps]=$RD_OPTION_NBAPPS
+appMap[iloveapps]=$RD_OPTION_ILOVEAPPS
+appMap[henley]=$RD_OPTION_HENLEYSERVICE
+appMap[mindapp-cxp]=$RD_OPTION_MINDAPPCXP
+appMap[mindapp-resource-viewer-cxp]=$RD_OPTION_MINDAPPRESOURCEVIEWER
+appMap[ngsamplewebapp]=$RD_OPTION_NGSAMPLEWEBAPP
+appMap[progressapp]=$RD_OPTION_PROGRESSAPPSERVICE
+appMap[enhancedinsite]=$RD_OPTION_ENHANCEDINSITESERVICE
+appMap[weblink]=$RD_OPTION_WEBLINKSERVICE
+appMap[messagecenter]=$RD_OPTION_MESSAGECENTERSERVICE
+
+RUN="NO"
+for appArtifact in "${appMap[@]}" ; do 
+    if [ "$appArtifact" != "-- NONE --" ]    
+	then
+		RUN="YES"
+	fi
+done
+
+if [ $RUN == "NO" ]
+then
+    exit 0
+fi
+		 
+for host in $RD_OPTION_HOSTS; do	
+
+	ssh pipeline@$RD_OPTION_HOSTS "/etc/init.d/ngtomcat01 stop"
+        wget -nv -O/dev/null http://10.160.178.50/downtime_host_services.php?host=$RD_OPTION_HOSTS
+	for appName in "${!appMap[@]}" ; do
+		appArtifact="${appMap["$appName"]}"
+	
+		if [ "${appArtifact}" != "-- NONE --" ] 
+		then
+		   ssh pipeline@$RD_OPTION_HOSTS "
+			rm -rf /pipe/data/ng/ngtomcat01/webapps/$appName.war
+			rm -rf /pipe/data/ng/ngtomcat01/webapps/$appName/"
+
+		   if [[ !("$appArtifact" =~ ^https?://.+$) ]]
+        	   then
+           		appArtifact="http://nexus.mindtap.corp.web/service/local/repositories/pipeline-production-snapshot/content/$appArtifact"
+        	   fi
+
+		   wget -nv -O $appName.war $appArtifact
+		   scp $appName.war pipeline@$RD_OPTION_HOSTS:/pipe/data/ng/ngtomcat01/webapps/$appName.war
+		fi
+	done
+	
+	ssh pipeline@$RD_OPTION_HOSTS "/etc/init.d/ngtomcat01 start"
+done]]></script> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - Core-App Wars</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="enhancedInsiteService" value="-- NONE --"/>  
+        <option name="henleyService" value="-- NONE --"/>  
+        <option name="hosts"/>  
+        <option name="iloveapps" value="-- NONE --"/>  
+        <option name="messagecenterService" value="-- NONE --"/>  
+        <option name="mindappCxp" value="-- NONE --"/>  
+        <option name="mindappResourceViewer" value="-- NONE --"/>  
+        <option name="nbapps" value="-- NONE --"/>  
+        <option name="nbcore" value="-- NONE --"/>  
+        <option name="nbreader" value="-- NONE --"/>  
+        <option name="ngsamplewebapp" value="-- NONE --"/>  
+        <option name="progressAppService" value="-- NONE --"/>  
+        <option name="weblinkService" value="-- NONE --"/> 
+      </options> 
+    </context>  
+    <uuid>9d697222-f885-4c05-b946-bb2cf542356e</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>5050526b-f303-4cba-a1f2-3cc627f30b2f</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <scriptargs/>  
+        <script><![CDATA[appMap=( "$RD_OPTION_NBCORE:nb"
+    	 "$RD_OPTION_NBREADER:nbreader"
+		 "$RD_OPTION_NBAPPS:nbapps"
+		 "$RD_OPTION_ILOVEAPPS:iloveapps"
+                 "$RD_OPTION_HENLEYSERVICE:henley"
+		 "$RD_OPTION_MINDAPPCXP:mindapp-cxp" 
+		 "$RD_OPTION_MINDAPPRESOURCEVIEWER:mindapp-resource-viewer-cxp"
+		 "$RD_OPTION_ENHANCEDINSITESERVICE:enhancedinsite"
+		 "$RD_OPTION_WEBLINKSERVICE:weblink"
+                 "${RD_OPTION_MESSAGECENTERSERVICE:messagecenter" )
+
+RUN="NO"
+for app in "${appMap[@]}" ; do
+	appArtifact=${app%%:*}
+	if [ "$appArtifact" != "-- NONE --" ]    
+	then
+		RUN="YES"
+	fi
+done
+
+if [ $RUN == "NO" ]
+then
+    exit 0
+fi
+		 
+for host in $RD_OPTION_HOSTS; do	
+
+	ssh pipeline@$RD_OPTION_HOSTS "/etc/init.d/ngtomcat01 stop"
+        wget -nv -O/dev/null http://10.160.178.50/downtime_host_services.php?host=$RD_OPTION_HOSTS
+	for app in "${appMap[@]}" ; do
+		appArtifact=${app%%:*}
+		appName=${app#*:}
+	
+		if [ "$appArtifact" != "-- NONE --" ] 
+		then
+		   ssh pipeline@$RD_OPTION_HOSTS "
+			rm -rf /pipe/data/ng/ngtomcat01/webapps/$appName.war
+			rm -rf /pipe/data/ng/ngtomcat01/webapps/$appName/"
+		  wget -nv -O ${appName}.war http://nexus.mindtap.corp.web/service/local/repositories/pipeline-production-snapshot/content/$appArtifact
+		  scp $appName.war pipeline@$RD_OPTION_HOSTS:/pipe/data/ng/ngtomcat01/webapps/$appName.war
+		fi
+	done
+	
+	ssh pipeline@$RD_OPTION_HOSTS"/etc/init.d/ngtomcat01 start"
+done]]></script> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - Core-App Wars - separate progressapp</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="enhancedInsiteService" value="-- NONE --"/>  
+        <option name="henleyService" value="-- NONE --"/>  
+        <option name="hosts"/>  
+        <option name="iloveapps" value="-- NONE --"/>  
+        <option name="messagecenterService" value="-- NONE --"/>  
+        <option name="mindappCxp" value="-- NONE --"/>  
+        <option name="mindappResourceViewer" value="-- NONE --"/>  
+        <option name="nbapps" value="-- NONE --"/>  
+        <option name="nbcore" value="-- NONE --"/>  
+        <option name="nbreader" value="-- NONE --"/>  
+        <option name="weblinkService" value="-- NONE --"/> 
+      </options> 
+    </context>  
+    <uuid>5050526b-f303-4cba-a1f2-3cc627f30b2f</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>6d12c255-fe2b-48af-88cf-5585eb1d39ab</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <scriptargs/>  
+        <script><![CDATA[declare -A appMap
+appMap[nb]=$RD_OPTION_NBCORE
+appMap[nbreader]=$RD_OPTION_NBREADER
+appMap[nbapps]=$RD_OPTION_NBAPPS
+appMap[iloveapps]=$RD_OPTION_ILOVEAPPS
+appMap[henley]=$RD_OPTION_HENLEYSERVICE 
+appMap[mindapp-cxp]=$RD_OPTION_MINDAPPCXP
+appMap[mindapp-resource-viewer]=$RD_OPTION_MINDAPPRESOURCEVIEWER
+appMap[ngsamplewebapp]=$RD_OPTION_NGSAMPLEWEBAPP
+
+if [ -z $RD_OPTION_PROGRESS_APP_HOSTS ]
+then
+   appMap[progressapp]=$RD_OPTION_PROGRESSAPPSERVICE
+fi
+
+appMap[enhancedinsite]=$RD_OPTION_ENHANCEDINSITESERVICE
+appMap[weblink]=$RD_OPTION_WEBLINKSERVICE
+appMap[messagecenter]=$RD_OPTION_MESSAGECENTERSERVICE
+
+RUN="NO"
+for appArtifact in "${appMap[@]}" ; do 
+    if [ -n "$appArtifact" ] && [ "$appArtifact" != "-- NONE --" ] && [[ "$appArtifact" != \$app* ]]    
+	then
+		RUN="YES"
+	fi
+done
+
+if [ $RUN == "YES" ]
+then	
+  for host in $RD_OPTION_HOSTS; do	
+
+	ssh pipeline@$RD_OPTION_HOSTS "/etc/init.d/ngtomcat01 stop"
+        wget -nv -O/dev/null http://10.160.178.50/downtime_host_services.php?host=$RD_OPTION_HOSTS
+	for appName in "${!appMap[@]}" ; do
+		appArtifact="${appMap["$appName"]}"
+	
+		if [ -n "${appArtifact}" ] && [ "${appArtifact}" != "-- NONE --" ] && [[ "${appArtifact}" != \$app* ]] 
+		then
+		   ssh pipeline@${host} "
+			rm -rf /pipe/data/ng/ngtomcat01/webapps/${appName}.war
+			rm -rf /pipe/data/ng/ngtomcat01/webapps/${appName}/"
+
+		   if [[ !("$appArtifact" =~ ^https?://.+$) ]]
+        	   then
+           		appArtifact="http://nexus.mindtap.corp.web/service/local/repositories/pipeline-production-snapshot/content/$appArtifact"
+        	   fi
+
+		   wget -nv -O $appName.war $appArtifact
+		   scp ${appName}.war pipeline@$RD_OPTION_HOSTS:/pipe/data/ng/ngtomcat01/webapps/$appName.war
+		fi
+	done
+	ssh pipeline@$RD_OPTION_HOSTS "/etc/init.d/ngtomcat01 start"
+  done
+fi
+
+#deploy progress app
+if [ -n "$progress_app_hosts" ] && [ "$RD_OPTION_PROGRESSAPPSERVICE" != "-- NONE --" ] && [[ "$RD_OPTION_PROGRESSAPPSERVICE}" != \$RD_OPTION_PROGRESSAPPSERVICE* ]]
+then
+    wget -nv -O progressapp.war $RD_OPTION_PROGRESSAPPSERVICE
+
+    for host in $progress_app_hosts; do
+        wget -nv -O/dev/null http://10.160.178.50/downtime_host_services.php?host=$RD_OPTION_HOSTS
+        ssh pipeline@$RD_OPTION_HOSTS "/etc/init.d/ngtomcat01 stop
+
+        rm -rf /pipe/data/ng/ngtomcat01/webapps/progressapp
+        rm -rf /pipe/data/ng/ngtomcat01/webapps/progressapp.war
+        rm -rf /pipe/data/ng/ngtomcat01/work/Catalina/localhost/progressapp"
+
+        scp progressapp.war pipeline@$RD_OPTION_HOSTS:/pipe/data/ng/ngtomcat01/webapps/progressapp.war
+
+        ssh pipeline@$RD_OPTION_HOSTS "/etc/init.d/ngtomcat01 start"
+    done
+fi]]></script> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - Core-App Wars with Restart Tomcat</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="enhancedInsiteService" value="-- NONE --"/>  
+        <option name="henleyService" value="-- NONE --"/>  
+        <option name="hosts"/>  
+        <option name="iloveapps" value="-- NONE --"/>  
+        <option name="messagecenterService" value="-- NONE --"/>  
+        <option name="mindappCxp" value="-- NONE --"/>  
+        <option name="mindappResourceViewer" value="-- NONE --"/>  
+        <option name="nbapps" value="-- NONE --"/>  
+        <option name="nbcore" value="-- NONE --"/>  
+        <option name="nbreader" value="-- NONE --"/>  
+        <option name="ngsamplewebapp" value="-- NONE --"/>  
+        <option name="progressAppService" value="-- NONE --"/>  
+        <option name="progress_app_hosts"/>  
+        <option name="weblinkService" value="-- NONE --"/> 
+      </options> 
+    </context>  
+    <uuid>6d12c255-fe2b-48af-88cf-5585eb1d39ab</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>855388f2-19ee-445b-a2ff-40dea8dbf1bf</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <exec>declare -A schemaMap schemaMap[nb]=${dbmaintain} schemaMap[weblink]=${dbmaintainWeblink} schemaMap[enhancedinsite]=${dbmaintainEnhancedInsite} schemaMap[analytics]=${dbmaintainAnalytics} for schemaName in "${!schemaMap[@]}" ; do schemaArtifact="${schemaMap["$schemaName"]}" if [ -n "${schemaArtifact}" ] &amp;&amp; [ "${schemaArtifact}" != "-- NONE --" ] &amp;&amp; [[ "${schemaArtifact}" != \$schema* ]] then if [[ !("$schemaArtifact" =~ ^https?://.+$) ]] then schemaArtifact="http://nexus.mindtap.corp.web/service/local/repositories/pipeline-production-snapshot/content/${schemaArtifact}" fi wget -nv -O dbmaintain.jar ${schemaArtifact} scp dbmaintain.jar pipeline@${host}:/tmp/dbmaintain.jar ssh pipeline@${host} " cd /tmp rm -rf updateScripts/ /usr/java/jdk1.6.0_45/bin/jar xvf /tmp/dbmaintain.jar updateScripts /pipe/tools/dbmaintain/2.1/dbmaintain.sh updateDatabase -config /pipe/tools/dbmaintain/2.1/dbmaintain.properties-${schemaName} " fi done</exec> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - DBMaintain</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="dbhost"> 
+          <description>Database upon which dbmaintain scripts will be run.</description> 
+        </option>  
+        <option name="dbmaintain" value="-- NONE --"> 
+          <description>The nbcore sources jar from which to extract the nb-core dbmaintain scripts.</description> 
+        </option>  
+        <option name="dbmaintainAnalytics" value="-- NONE --"> 
+          <description>The analytics sources jar from which to extract the analytics dbmaintain scripts</description> 
+        </option>  
+        <option name="dbmaintainWeblink" value="-- NONE --"> 
+          <description>The enhancedinsite sources jar from which to extract the enhancedinsite dbmaintain scripts.</description> 
+        </option>  
+        <option name="host"> 
+          <description>Host from which dbmaintain will be run.</description> 
+        </option> 
+      </options> 
+    </context>  
+    <dispatch> 
+      <threadcount>1</threadcount>  
+      <keepgoing>false</keepgoing>  
+      <excludePrecedence>true</excludePrecedence>  
+      <rankOrder>ascending</rankOrder> 
+    </dispatch>  
+    <uuid>855388f2-19ee-445b-a2ff-40dea8dbf1bf</uuid>  
+    <nodefilters> 
+      <filter>*.</filter> 
+    </nodefilters>  
+    <group>Non-Prod Deployment jobs</group> 
+  </job>  
+  <job> 
+    <id>19776934-e90d-4036-b85a-ee4e820f3eba</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <scriptargs/>  
+        <script><![CDATA[declare -A schemaMap
+schemaMap[nb]=$RD_OPTION_DBMAINTAIN
+schemaMap[weblink]=$RD_OPTION_DBMAINTAINWEBLINK
+schemaMap[enhancedinsite]=$RD_OPTION_DBMAINTAINENHANCEDINSITE
+schemaMap[analytics]=$RD_OPTION_DBMAINTAINANALYTICS
+
+for schemaName in "${!schemaMap[@]}" ; do
+    schemaArtifact="${schemaMap["$schemaName"]}"
+
+    if [ -n "${schemaArtifact}" ] && [ "${schemaArtifact}" != "-- NONE --" ] && [[ "${schemaArtifact}" != \$schema* ]]
+    then
+
+        if [[ !("$schemaArtifact" =~ ^https?://.+$) ]]
+        then
+           schemaArtifact="http://nexus.mindtap.corp.web/service/local/repositories/pipeline-production-snapshot/content/${schemaArtifact}"
+        fi
+
+        wget -nv -O dbmaintain.jar ${schemaArtifact}
+
+        scp dbmaintain.jar pipeline@${host}:/tmp/dbmaintain.jar
+
+        ssh pipeline@${host} "
+        cd /tmp
+        rm -rf updateScripts/
+        /usr/java/jdk1.6.0_45/bin/jar xvf /tmp/dbmaintain.jar updateScripts
+        /pipe/tools/dbmaintain/2.1/dbmaintain.sh updateDatabase -config /pipe/tools/dbmaintain/2.1/dbmaintain.properties-${schemaName}
+        "
+
+    fi
+done]]></script> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - DBMaintain</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="dbhost"> 
+          <description>Database upon which dbmaintain scripts will be run.</description> 
+        </option>  
+        <option name="dbmaintain" value="-- NONE --"> 
+          <description>The nbcore sources jar from which to extract the nb-core dbmaintain scripts.</description> 
+        </option>  
+        <option name="dbmaintainAnalytics" value="-- NONE --"> 
+          <description>The analytics sources jar from which to extract the analytics dbmaintain scripts</description> 
+        </option>  
+        <option name="dbmaintainEnhancedInsite" value="-- NONE --"> 
+          <description>The enhancedinsite sources jar from which to extract the enhancedinsite dbmaintain scripts.</description> 
+        </option>  
+        <option name="dbmaintainWeblink" value="-- NONE --"> 
+          <description>The weblink sources jar from which to extract the weblink dbmaintain scripts.</description> 
+        </option>  
+        <option name="host"> 
+          <description>Host from which dbmaintain will be run.</description> 
+        </option> 
+      </options> 
+    </context>  
+    <uuid>19776934-e90d-4036-b85a-ee4e820f3eba</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>b1b4f55f-974c-4e29-8c07-cde754ac0222</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <scriptargs/>  
+        <script><![CDATA[if [ "$RD_OPTION_HENLEYFORCONCEPTGRAPH" == "-- NONE --" ]; then
+   exit 0
+fi
+
+FAILURE=0
+  
+ mkdir -p /tmp/henley-app
+ cd /tmp/henley-app
+ wget -nv -O henley.war http://nexus.mindtap.corp.web/service/local/repositories/pipeline-production-snapshot/content$RD_OPTION_HENLEYFORCONCEPTGRAPH
+ jar -xvf henley.war
+
+ if [ "$RD_OPTION_CORE_APP_HOSTS" == "" ]; then
+  exit -1
+ fi
+
+   for envHost in ${RD_OPTION_CORE_APP_HOSTS[*]}; do
+   if [ "$chemistryCourseKeys" != "" ]; then
+    echo Building Chemistry Course...........
+    for courseKey in ${RD_OPTION_CHEMISTRYCOURSEKEYS[*]}; do
+       	echo processing Chemistry course $courseKey
+ 	 	sed s/{courseKey}/$courseKey/g /tmp/henley-app/WEB-INF/classes/chemistry_template.json > /tmp/chemistry_${courseKey}.json
+
+		echo deleting $courseKey
+		curl -i -H "Accept: application/json" http://${envHost}/henley/rest/graph/delete/courseKey/${courseKey}
+
+                RESULT=$?     	
+
+                if [ ${RESULT} -eq 0 ]
+                then
+ 		   echo adding $courseKey
+                   curl -H "Accept: application/json" -H "Content-Type: application/json" -X POST --data-binary "@/tmp/chemistry_${courseKey}.json" http://${envHost}/henley/rest/graph/add/nodes
+                else
+                   echo "***Delete unsuccessful; skipping add due to error code: ${RESULT}"
+
+                   FAILURE=1
+                fi
+    done
+   fi
+
+
+ if [ "$RD_OPTION_HISTORYCOURSEKEYS" != "" ]; then
+  echo Building History Course...........
+	for courseKey in ${RD_OPTION_HISTORYCOURSEKEYS[*]}; do
+  	 	echo processing History course $courseKey
+  	 	sed s/{courseKey}/$courseKey/g /tmp/henley-app/WEB-INF/classes/history_template.json > /tmp/history_${courseKey}.json
+  	 	
+		echo deleting $courseKey
+		curl -i -H "Accept: application/json" http://${envHost}/henley/rest/graph/delete/courseKey/${courseKey}
+
+                RESULT=$?     	
+
+                if [ ${RESULT} -eq 0 ]
+                then
+		   echo adding $courseKey
+  	 	   curl -H "Accept: application/json" -H "Content-Type: application/json" -X POST --data-binary "@/tmp/history_${courseKey}.json" http://${envHost}/henley/rest/graph/add/nodes
+
+                else
+                   echo "***Delete unsuccessful; skipping add due to error code: ${RESULT}"
+
+                   FAILURE=1
+                fi
+	done
+ fi
+ done
+
+
+ rm -rf /tmp/henley-app/
+
+ exit ${FAILURE}]]></script> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - Henley Concept Graph Builder</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="chemistryCourseKeys"> 
+          <description>chemistry course keys</description> 
+        </option>  
+        <option name="core_app_hosts"> 
+          <description>environment</description> 
+        </option>  
+        <option name="henleyForConceptGraph" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/henley" enforcedvalues="true"/>  
+        <option name="historyCourseKeys"> 
+          <description>history course keys</description> 
+        </option> 
+      </options> 
+    </context>  
+    <uuid>b1b4f55f-974c-4e29-8c07-cde754ac0222</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>66fc7bfe-f68e-4112-b4d7-359270aeaa45</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <scriptargs/>  
+        <script><![CDATA[# $RD_OPTION_ARTIFACT
+# $RD_OPTION_HOSTS
+# $RD_OPTION_MINDAPP
+# $RD_OPTION_PATH
+# $RD_OPTION_NAME
+# weblink-client-3.8.0-20131217.231143-6.tar.gz
+
+if [ -n "$RD_OPTION_ARTIFACT" ] && [ "$RD_OPTION_ARTIFACT" != "-- NONE --" ] && [[ "$RD_OPTION_ARTIFACT" != \$RD_OPTION_ARTIFACT* ]] ;
+then
+  if [[ !("$RD_OPTION_ARTIFACT" =~ ^https?://.+$) ]]
+  then     
+      artifact="http://nexus.mindtap.corp.web/service/local/repositories/pipeline-production-snapshot/content/com/cengage/mindapp/$RD_OPTION_PATH-$RD_OPTION_ARTIFACT.tar.gz"
+      echo $artifact
+      fi
+    wget -nv -O /tmp/$RD_OPTION_MINDAPP.tar.gz $artifact
+     for host in $RD_OPTION_HOSTS; do
+      scp /tmp/$RD_OPTION_MINDAPP.tar.gz pipeline@$RD_OPTION_HOSTS:/tmp/$RD_OPTION_MINDAPP.tar.gz
+ #     ssh pipeline@$RD_OPTION_HOSTS "  
+ #     rm -rf /pipe/data/ng/content/mindapp/$RD_OPTION_MINDAPP
+ #     mkdir -p /pipe/data/ng/content/mindapp/$RD_OPTION_MINDAPP
+ #     tar xzf /tmp/$RD_OPTION_MINDAPP.tar.gz -C /pipe/data/ng/content/mindapp/$RD_OPTION_MINDAPP"
+  done
+
+
+fi]]></script> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - MindApp Client</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="artifact"/>  
+        <option name="hosts"/>  
+        <option name="mindapp"/>  
+        <option name="path"/> 
+      </options> 
+    </context>  
+    <uuid>66fc7bfe-f68e-4112-b4d7-359270aeaa45</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>06258c1b-bf83-4d9c-a68f-82ee56ece20c</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <jobref name="Deploy Template - MindApp Client" group="Prod Deployment Jobs/Deploy Template - MindApp Client" nodeStep="true"> 
+          <arg line="-hosts ${option.hosts} -artifact ${option.weblinkClient} -mindapp weblink -path weblink-client/3.10.0-SNAPSHOT/weblink-client"/> 
+        </jobref> 
+      </command>  
+      <command> 
+        <jobref name="Deploy Template - MindApp Client" group="Prod Deployment Jobs/Deploy Template - MindApp Client" nodeStep="true"> 
+          <arg line="-hosts ${option.hosts} -artifact ${option.progressAppClient} -mindapp progress -path progress-client/3.11.0-SNAPSHOT/progress-client"/> 
+        </jobref> 
+      </command>  
+      <command> 
+        <jobref name="Deploy Template - MindApp Client" group="Prod Deployment Jobs/Deploy Template - MindApp Client" nodeStep="true"> 
+          <arg line="-hosts ${option.hosts} -artifact ${option.enhancedInsiteClient} -mindapp enhancedinsite -path enhancedinsite-client/3.11.0-SNAPSHOT/enhancedinsite-client"/> 
+        </jobref> 
+      </command>  
+      <command> 
+        <jobref name="Deploy Template - MindApp Client" group="Prod Deployment Jobs/Deploy Template - MindApp Client" nodeStep="true"> 
+          <arg line="-hosts ${option.hosts} -artifact ${option.chemrefClient} -mindapp chemref -path chemref-client/0.1.0-SNAPSHOT/chemref-client"/> 
+        </jobref> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - MindApps - with chemref</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="chemrefClient" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/chemref-client"/>  
+        <option name="enhancedInsiteClient" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/enhancedinsite-client"/>  
+        <option name="hosts"/>  
+        <option name="progressAppClient" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/progress-client"/>  
+        <option name="weblinkClient" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/weblink-client"/> 
+      </options> 
+    </context>  
+    <uuid>06258c1b-bf83-4d9c-a68f-82ee56ece20c</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>86f2fdcb-7e9f-4e9e-abdf-e4dea1a6d906</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <scriptargs/>  
+        <script><![CDATA[if [ "$RD_OPTION_ANALYTICS" != "-- NONE --" ] 
+then
+
+wget -nv -O analytics.war http://nexus.mindtap.corp.web/service/local/repositories/pipeline-production-snapshot/content/$RD_OPTION_ANALYTICS
+
+for host in $RD_OPTION_HOSTS; do
+ssh pipeline@$RD_OPTION_HOSTS "/etc/init.d/ngtomcat01 stop
+
+rm -rf /pipe/data/ng/ngtomcat01/webapps/analytics
+rm -rf /pipe/data/ng/ngtomcat01/webapps/analytics.war
+rm -rf /pipe/data/ng/ngtomcat01/work/Catalina/localhost/analytics"
+
+scp analytics.war pipeline@$$RD_OPTION_HOSTS:/pipe/data/ng/ngtomcat01/webapps/analytics.war
+
+ssh pipeline@$RD_OPTION_HOSTS "/etc/init.d/ngtomcat01 start"
+
+sleep 45
+curl --connect-timeout 120 -s http://$RD_OPTION_HOSTS:8080/analytics/__status|grep 'build-tag':
+if [ "$?" -ne 0 ]
+then
+   exit 1
+fi
+
+done
+
+fi]]></script> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - MindTap Optional Analytics Wars (Rolling)</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="analytics"/>  
+        <option name="hosts"/> 
+      </options> 
+    </context>  
+    <uuid>86f2fdcb-7e9f-4e9e-abdf-e4dea1a6d906</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>83bbec36-4a7b-4e40-b463-fa317add25d0</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <scriptargs/>  
+        <script><![CDATA[set +e
+
+if [ -z "$RD_OPTION_PROGRESSAPP_HOSTS" ]
+then
+   $RD_OPTION_PROGRESSAPP_HOSTS=$RD_OPTION_CORE_APP_HOSTS
+fi
+
+function  check_status {
+    for host in $RD_OPTION_CORE_APP_HOSTS; do
+      for war in $RD_OPTION_CORE_APP_HOSTS; do
+          curl --connect-timeout 20 -s http://$host:8080/$war/__status|grep 'build-tag':
+          if [ "$?" -ne 0 ]
+              then
+              return 0
+          fi
+
+        done 
+      for ui in $RD_OPTION_CORE_APP_UIS; do
+          curl --connect-timeout 20 -s http://$host/$ui/__status|grep 'build-tag':
+          if [ "$?" -ne 0 ]
+              then
+              return 0
+          fi
+
+        done 
+    done
+
+for host in $RD_OPTION_PROGRESSAPP_HOSTS; do
+      for war in $RD_OPTION_PROGRESSAPP_WARS; do
+          curl --connect-timeout 20 -s http://$host:8080/$war/__status|grep 'build-tag':
+          if [ "$?" -ne 0 ]
+              then
+              return 0
+          fi
+
+        done 
+    done
+    exit 0
+}
+sleep 90
+while [  $check_attempts -gt 0 ]; do
+    check_status
+    sleep 60
+    let check_attempts=check_attempts-1
+done
+exit 1]]></script> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - MindTap Verify Status of Wars and UI</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="check_attempts" value="6"> 
+          <description>Number of times to check before giving up</description> 
+        </option>  
+        <option name="core_app_hosts"/>  
+        <option name="core_app_uis" value="static static/iloveapps/weblink static/iloveapps/enhancedinsite static/progress/client"/>  
+        <option name="core_app_wars" value="iloveapps nbapps nbreader nb weblink"> 
+          <description>iloveapps mindapp-cxp mindapp-resource-viewer nbapps nbreader nb ngsamplewebapp weblink</description> 
+        </option>  
+        <option name="progressapp_hosts"/>  
+        <option name="progressapp_wars" value="progressapp"/> 
+      </options> 
+    </context>  
+    <uuid>83bbec36-4a7b-4e40-b463-fa317add25d0</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>59ed5218-d0a3-4764-8154-3f038fee5df8</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <scriptargs/>  
+        <script><![CDATA[set +e
+function  check_status {
+    for host in $RD_OPTION_CORE_APP_HOSTS; do
+      for war in $RD_OPTION_CORE_APP_HOSTS; do
+          curl --connect-timeout 20 -s http://$host:8080/$war/__status|grep 'build-tag':
+          if [ "$?" -ne 0 ]
+              then
+              return 0
+          fi
+
+        done 
+      for ui in $RD_OPTION_CORE_APP_UIS; do
+          curl --connect-timeout 20 -s http://$host/$ui/__status|grep 'build-tag':
+          if [ "$?" -ne 0 ]
+              then
+              return 0
+          fi
+
+        done 
+    done
+for host in $RD_OPTION_ANALYTICS_HOSTS; do
+      for war in $RD_OPTION_ANALYTICS_WARS; do
+          curl --connect-timeout 20 -s http://$host:8080/$war/__status|grep 'build-tag':
+          if [ "$?" -ne 0 ]
+              then
+              return 0
+          fi
+
+        done 
+    done
+
+for host in $RD_OPTION_PROGRESSAPP_HOSTS; do
+      for war in $progressapp_wars; do
+          curl --connect-timeout 20 -s http://$host:8080/$war/__status|grep 'build-tag':
+          if [ "$?" -ne 0 ]
+              then
+              return 0
+          fi
+
+        done 
+    done
+
+    exit 0
+}
+sleep 90
+while [  $check_attempts -gt 0 ]; do
+    check_status
+    sleep 60
+    let check_attempts=check_attempts-1
+done
+exit 1]]></script> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - MindTap Verify Status of Wars and UI - separate progressapp</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="analytics_hosts"/>  
+        <option name="analytics_wars" value="analytics"/>  
+        <option name="check_attempts" value="6"> 
+          <description>Number of times to check before giving up</description> 
+        </option>  
+        <option name="core_app_hosts"/>  
+        <option name="core_app_uis" value="static static/iloveapps/weblink static/iloveapps/enhancedinsite static/progress/client"/>  
+        <option name="core_app_wars" value="henley iloveapps nbapps nbreader nb weblink"> 
+          <description>henley iloveapps mindapp-cxp mindapp-resource-viewer-cxp nbapps nbreader nb ngsamplewebapp weblink</description> 
+        </option>  
+        <option name="progressapp_hosts"/>  
+        <option name="progressapp_wars" value="progressapp"/> 
+      </options> 
+    </context>  
+    <uuid>59ed5218-d0a3-4764-8154-3f038fee5df8</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>50f2b1f1-ecf7-439c-b433-bedc749c55b8</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <scriptargs/>  
+        <script><![CDATA[set +e
+function  check_status {
+    for host in $RD_OPTION_HOSTS; do
+      for war in $RD_OPTION_WARS; do
+          curl --connect-timeout 20 -s http://$RD_OPTION_HOSTS:8080/$RD_OPTION_WARS/__status|grep 'build-tag':
+          if [ "$?" -ne 0 ]
+              then
+              return 0
+          fi
+
+        done 
+    done
+    exit 0
+}
+sleep 90
+while [  $RD_OPTION_CHECK_ATTEMTS -gt 0 ]; do
+    check_status
+    sleep 60
+    let RD_OPTION_CHECK_ATTEMPTS=RD_OPTION_CHECK_ATTEMPTS-1
+done
+exit 1]]></script> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - MindTap Verify Wars Are Running</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="check_attempts" value="6"> 
+          <description>Number of times to check before giving up</description> 
+        </option>  
+        <option name="hosts"/>  
+        <option name="wars" value="nb nbreader nbapps iloveapps henley"/> 
+      </options> 
+    </context>  
+    <uuid>50f2b1f1-ecf7-439c-b433-bedc749c55b8</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>4b56a1e6-4d02-489c-8e20-6f27295d3345</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <scriptargs/>  
+        <script><![CDATA[if [ "$RD_OPTION_PROGRESSAPPSERVICE" != "-- NONE --" ] 
+then
+
+wget -nv -O progressapp.war http://nexus.mindtap.corp.web/service/local/repositories/pipeline-production-snapshot/content/$RD_OPTION_PROGRESSAPPSERVICE
+
+for host in $RD_OPTION_HOSTS; do
+wget -nv -O/dev/null http://10.160.178.50/downtime_host_services.php?host=$RD_OPTION_HOSTS
+ssh pipeline@$RD_OPTION_HOSTS "/etc/init.d/ngtomcat01 stop
+
+rm -rf /pipe/data/ng/ngtomcat01/webapps/progressapp
+rm -rf /pipe/data/ng/ngtomcat01/webapps/progressapp.war
+rm -rf /pipe/data/ng/ngtomcat01/work/Catalina/localhost/progressapp"
+
+scp progressapp.war pipeline@$RD_OPTION_HOSTS:/pipe/data/ng/ngtomcat01/webapps/progressapp.war
+
+ssh pipeline@$RD_OPTION_HOSTS "/etc/init.d/ngtomcat01 start"
+done
+
+fi]]></script> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - ProgressApp Wars</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="hosts"/>  
+        <option name="progressAppService"/> 
+      </options> 
+    </context>  
+    <uuid>4b56a1e6-4d02-489c-8e20-6f27295d3345</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>ca40d85e-2d2b-4c58-83f1-e39db430dd63</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <exec>if [ "${option.ui}" != "-- NONE --" ] &amp;&amp; [[ "${option.ui}" != \$u* ]] then if [[ !("$ui" =~ ^https?://.+$) ]] then ui="http://nexus.mindtap.corp.web/service/local/repositories/pipeline-production-snapshot/content/${ui}" fi wget -nv -O ui.tar.gz ${option.ui} for host in $hosts; do scp ui.tar.gz pipeline@${option.host}:/tmp/ui.tar.gz ssh pipeline@${option.host} " rm -rf /pipe/data/ng/content/static tar xzf /tmp/ui.tar.gz -C /pipe/data/ng/content" done fi if [ -n "${option.henleyClient}" ] &amp;&amp; [ "${option.henleyClient}" != "-- NONE --" ] &amp;&amp; [[ "${option.henleyClient}" != \$henley* ]] then if [[ !("${option.henleyClient}" =~ ^https?://.+$) ]] then henleyClient="http://nexus.mindtap.corp.web/service/local/repositories/pipeline-production-snapshot/content/${option.henleyClient}" fi wget -nv -O henley-ui.zip ${option.henleyClient} for host in ${option.hosts}; do scp henley-ui.zip pipeline@${option.host}:/tmp/henley-ui.zip ssh pipeline@${option.host} " rm -rf /pipe/data/ng/content/henley-static unzip -q /tmp/henley-ui.zip -d /pipe/data/ng/content" done fi</exec> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Deploy Template - UI</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="henleyClient" value="-- NONE --"/>  
+        <option name="hosts" value="-- NONE --"/>  
+        <option name="ui"/> 
+      </options> 
+    </context>  
+    <uuid>ca40d85e-2d2b-4c58-83f1-e39db430dd63</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>b8d4f000-7551-48bd-b46d-89fcf0050589</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <jobref name="Deploy Template - Henley Concept Graph Builder" group="Prod Deployment Jobs/Templates" nodeStep="true"> 
+          <arg line="-chemistryCourseKeys ${option.chemistryCourseKeys} -core_app_hosts ${option.core_app_hosts} -henleyForConceptGraph ${option.henleyForConceptGraph} -historyCourseKeys ${option.historyCourseKeys}"/> 
+        </jobref> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>PROD - Concept Graph Builder</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="chemistryCourseKeys"/>  
+        <option name="core_app_hosts" value="whcinxngapp1.corp.web whcinxngapp2.corp.web whcinxngapp3.corp.web whcinxngapp4.corp.web whcinxngapp5.corp.web whcinxngapp06.corp.web whcinxngapp07.corp.web whcinxngapp08.corp.web whcinxngapp09.corp.web whcinxngapp10.corp.web"/>  
+        <option name="henleyForConceptGraph" value="-- NONE--" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/henley"/>  
+        <option name="historyCourseKeys"/> 
+      </options> 
+    </context>  
+    <uuid>b8d4f000-7551-48bd-b46d-89fcf0050589</uuid>  
+    <group>Prod Deployment Jobs/Templates</group> 
+  </job>  
+  <job> 
+    <id>2aa80dc9-c71e-478e-a18f-08532734aace</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <jobref name="Deploy Template - DBMaintain" group="Prod Deployment Jobs/Templates"> 
+          <arg line="-host ${option.dbmaintain_host} -dbhost=${option.db_host}"/> 
+        </jobref> 
+      </command>  
+      <command> 
+        <jobref name="Deploy Template - Analytics Wars with Restart Tomcat" group="Prod Deployment Jobs/Templates"> 
+          <arg line="-hosts ${option.analytics_hosts}"/> 
+        </jobref> 
+      </command>  
+      <command> 
+        <jobref name="Deploy Template - ProgressApp Wars" group="Prod Deployment Jobs/Templates"> 
+          <arg line="-hosts ${option.progressapp_hosts}"/> 
+        </jobref> 
+      </command>  
+      <command> 
+        <jobref name="Deploy Template - Core-App Wars with Restart Tomcat" group="Prod Deployment Jobs/Templates"> 
+          <arg line="-hosts ${option.core_app_hosts}"/> 
+        </jobref> 
+      </command>  
+      <command> 
+        <jobref name="Deploy Template - UI" group="Prod Deployment Jobs/Templates"> 
+          <arg line="-hosts ${option.core_app_hosts}"/> 
+        </jobref> 
+      </command>  
+      <command> 
+        <jobref name="Deploy Template - MindApps - with chemref" group="Prod Deployment Jobs/Templates" nodeStep="true"> 
+          <arg line="-hosts ${option.core_app_hosts}"/> 
+        </jobref> 
+      </command>  
+      <command> 
+        <jobref name="Deploy Template - MindTap Verify Status of Wars and UI" group="Prod Deployment Jobs/Templates" nodeStep="true"/> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>PROD - Deploy 6-10</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="analytics" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/analytics"/>  
+        <option name="analytics_hosts"/>  
+        <option name="chemrefClient" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/chemref-client"/>  
+        <option name="core_app_hosts"/>  
+        <option name="db_hosts"> 
+          <description>Host to run dbmaintain against</description> 
+        </option>  
+        <option name="dbmaintain" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/nb-db"/>  
+        <option name="dbmaintainAnalytics" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/mt-analytics-db"/>  
+        <option name="dbmaintainEnhancedInsite" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/enhancedinsite-db"/>  
+        <option name="dbmaintainWeblink" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/weblink-db"/>  
+        <option name="dbmaintain_host"/>  
+        <option name="enhancedInsiteClient" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/enhancedinsite-client"/>  
+        <option name="enhancedInsiteService" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/enhancedinsite"/>  
+        <option name="henleyClient" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/henley-ui"/>  
+        <option name="henleyService" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/henley"/>  
+        <option name="iloveapps" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/iloveapps"/>  
+        <option name="messagecenterService" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/messagecenter"/>  
+        <option name="mindappCxp" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/mindapp-cxp"/>  
+        <option name="mindappResourceViewer" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/mindapp-resource-viewer"/>  
+        <option name="nbapps" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/nbapps"/>  
+        <option name="nbcore" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/nb"/>  
+        <option name="nbreader" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/nbreader"/>  
+        <option name="progressAppClient" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/progress-client"/>  
+        <option name="progressAppService" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/progressapp"/>  
+        <option name="progressapp_hosts"/>  
+        <option name="ui" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/ui"/>  
+        <option name="weblinkClient" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/weblink-client"/>  
+        <option name="weblinkService" value="-- NONE --" valuesUrl="http://mtcinx-graphmgo01.mt.corp.web:3000/artifacts/weblink"/> 
+      </options> 
+    </context>  
+    <uuid>2aa80dc9-c71e-478e-a18f-08532734aace</uuid>  
+    <group>Prod Deployment Jobs/Deploy</group> 
+  </job>  
+  <job> 
+    <id>466ebb02-515e-43a0-bea3-542e0c61b3ed</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <exec>sudo service elasticsearch ${option.Method}</exec> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Restart|Start|Stop Elasticsearch</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="Env"> 
+          <description>Example: mtcinx-apdanl01.mt.corp.web</description> 
+        </option>  
+        <option name="Method" values="restart,start,stop" enforcedvalues="true"/> 
+      </options> 
+    </context>  
+    <dispatch> 
+      <threadcount>1</threadcount>  
+      <keepgoing>false</keepgoing>  
+      <excludePrecedence>false</excludePrecedence>  
+      <rankOrder>ascending</rankOrder> 
+    </dispatch>  
+    <uuid>466ebb02-515e-43a0-bea3-542e0c61b3ed</uuid>  
+    <nodefilters> 
+      <filter>${option.Env}</filter> 
+    </nodefilters>  
+    <group>Self-Services</group> 
+  </job>  
+  <job> 
+    <id>c96bff79-9598-47da-a5aa-ac60b0bcb5e3</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <exec>sudo service ${option.Name} ${option.Method}</exec> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Restart|Start|Stop Jenkins</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="Method" values="restart,start,status,stop" enforcedvalues="true"/>  
+        <option name="Name" values="jenkins" enforcedvalues="true"> 
+          <description>http://mtcinx-prdint01.corp.web:8080/</description> 
+        </option> 
+      </options> 
+    </context>  
+    <uuid>c96bff79-9598-47da-a5aa-ac60b0bcb5e3</uuid>  
+    <group>Self-Services</group> 
+  </job>  
+  <job> 
+    <id>817dd912-83f1-4393-9ff3-6af90120445d</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <exec>sudo service ${option.Name} ${option.Method}</exec> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Restart|Start|Stop Nexus</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="Method" value="status" values="restart,start,status,stop" enforcedvalues="true"/>  
+        <option name="Name" values="nexus" enforcedvalues="true"> 
+          <description>nexus.mindtap.corp.web</description> 
+        </option> 
+      </options> 
+    </context>  
+    <uuid>817dd912-83f1-4393-9ff3-6af90120445d</uuid>  
+    <group>Self-Services</group> 
+  </job>  
+  <job> 
+    <id>a9de5e32-a3d2-46d8-83a9-6a02e840b566</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <exec>sudo service ${option.Name} ${option.Method}</exec> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Restart|Start|Stop Sonar</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="Method" values="restart,start,status,stop" enforcedvalues="true"/>  
+        <option name="Name" values="sonar" enforcedvalues="true"> 
+          <description>http://sonar.mindtap.corp.web</description> 
+        </option> 
+      </options> 
+    </context>  
+    <uuid>a9de5e32-a3d2-46d8-83a9-6a02e840b566</uuid>  
+    <group>Self-Services</group> 
+  </job>  
+  <job> 
+    <id>dc28e094-0e8b-4643-91d5-42b08b54d3b1</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <exec>ssh pipeline@${option.Env}:/pipe/apps/tomcat/7.0.35/bin/${option.Method}.sh</exec> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>Restart|Start|Stop Tomcat</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="Env" valuesUrl="http://mtcinx-prdint01.corp.web:8181/json/envs.json" enforcedvalues="true"> 
+          <description>Environment</description> 
+        </option>  
+        <option name="Method" values="shutdown,startup" enforcedvalues="true"/> 
+      </options> 
+    </context>  
+    <uuid>dc28e094-0e8b-4643-91d5-42b08b54d3b1</uuid>  
+    <group>Self-Services</group> 
+  </job>  
+  <job> 
+    <id>dece9851-2257-44bc-8c7b-2b4e2b4df1a8</id>  
+    <loglevel>INFO</loglevel>  
+    <sequence keepgoing="false" strategy="node-first"> 
+      <command> 
+        <scriptargs/>  
+        <script><![CDATA[rsync -av --exclude=".git" --ignore-existing * pipeline@mtcinx-stgweb01.mt.corp.web:/usr/share/nginx/html
+rsync -av --exclude=".git" --ignore-existing * pipeline@mtcinx-stgweb02.mt.corp.web:/usr/share/nginx/html
+
+rsync -av --exclude=".git" --ignore-existing * pipeline@mtcinx-prdweb01.mt.corp.web:/usr/share/nginx/html
+rsync -av --exclude=".git" --ignore-existing * pipeline@mtcinx-prdweb02.mt.corp.web:/usr/share/nginx/html]]></script> 
+      </command> 
+    </sequence>  
+    <description/>  
+    <name>STATIC MINDTAP LIBRARIES - Deploy</name>  
+    <context> 
+      <project>Mindtap</project>  
+      <options> 
+        <option name="Name" values="https://github.com/CengageEng/mindtap-static-lib/" enforcedvalues="true"/> 
+      </options> 
+    </context>  
+    <uuid>dece9851-2257-44bc-8c7b-2b4e2b4df1a8</uuid>  
+    <group>Prod Deployment Jobs/Deploy</group> 
+  </job> 
+</joblist>
